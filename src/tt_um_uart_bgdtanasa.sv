@@ -1,10 +1,6 @@
 `default_nettype none
 
-module tt_um_uart_bgdtanasa #(
-    parameter integer CLK_FREQ      = 50000000, // Hz
-    parameter integer BAUDRATE      = 115200,   // Hz
-    parameter integer NO_RX_SAMPLES = 9
-) (
+module tt_um_uart_bgdtanasa (
     input  wire [ 7 : 0 ] ui_in,    // Dedicated inputs
     output wire [ 7 : 0 ] uo_out,   // Dedicated outputs
     input  wire [ 7 : 0 ] uio_in,   // IOs: Input path
@@ -14,6 +10,10 @@ module tt_um_uart_bgdtanasa #(
     input  wire           clk,      // clock
     input  wire           rst_n     // reset_n - low to reset
 );
+    localparam integer CLK_FREQ      = 50000000; // Hz
+    localparam integer BAUDRATE      = 115200;   // Hz
+    localparam integer NO_RX_SAMPLES = 9;
+
     wire rx_data_in;
     wire rx_data_ready;
     reg  rx_sample_clk;
