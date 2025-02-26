@@ -12,7 +12,7 @@ module ttuart_rx #(
     output reg            rx_sample_clk
 );
     localparam integer                                  RX_SAMPLE_DIVIDER   = (CLK_FREQ) / (NO_RX_SAMPLES * BAUDRATE);
-    localparam integer                                  RX_SAMPLE_CNT_WIDTH = $clog2(RX_SAMPLE_DIVIDER) + 1;
+    localparam integer                                  RX_SAMPLE_CNT_WIDTH = $clog2(RX_SAMPLE_DIVIDER) + 2;
     localparam unsigned [ RX_SAMPLE_CNT_WIDTH - 1 : 0 ] RX_SAMPLE_WRAP      = RX_SAMPLE_DIVIDER[ RX_SAMPLE_CNT_WIDTH - 1 : 0 ] - 1;
 
     localparam integer NO_RX_BITS         = 10;
@@ -141,7 +141,7 @@ module ttuart_rx #(
                 rx_sample_clk     <= 1'b1;
                 rx_sample_wrap    <= RX_SAMPLE_WRAP;
                 rx_sample_cnt     <= 0;
-                rx_sample_clk_cnt <= 1;
+                rx_sample_clk_cnt <= 0;
 
                 for (i = BIT_STOP_B; i <= BIT_START_E; i = i + 1) begin
                     rx_samples[ i ] <= (i >= rx_stop_zeros + 1);
@@ -185,10 +185,10 @@ module ttuart_rx #(
                         rx_stop_zeros <= rx_stop_zeros;
                     end
                 end else begin
-                    rx_sample_clk     <= (rx_marker == BIT_START_X) ? (0)              : (rx_sample_clk);
-                    rx_sample_wrap    <= (rx_marker == BIT_START_X) ? (RX_SAMPLE_WRAP) : (rx_sample_wrap);
-                    rx_sample_cnt     <= (rx_marker == BIT_START_X) ? (0)              : (rx_sample_cnt);
-                    rx_sample_clk_cnt <= (rx_marker == BIT_START_X) ? (0)              : (rx_sample_clk_cnt + 1);
+                    rx_sample_clk     <= rx_sample_clk;
+                    rx_sample_wrap    <= rx_sample_wrap;
+                    rx_sample_cnt     <= rx_sample_cnt;
+                    rx_sample_clk_cnt <= rx_sample_clk_cnt + 1;
 
                     rx_samples    <= rx_samples;
                     rx_marker     <= rx_marker;
